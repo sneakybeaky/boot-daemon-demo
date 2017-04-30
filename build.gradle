@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = "1.3.2.RELEASE"
+        springBootVersion = "1.5.3.RELEASE"
         osPackageVersion = "3.4.0"
     }
     repositories {
@@ -47,7 +47,7 @@ eclipse {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = "2.9"
+    gradleVersion = "3.5"
 }
 
 springBoot {
