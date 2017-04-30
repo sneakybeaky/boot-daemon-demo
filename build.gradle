@@ -113,6 +113,5 @@ buildDeb {
     user "daemon-demo"
     permissionGroup "daemon-demo"
     directory("/opt/local/daemon-demo/log", 0755)
-    link("/etc/init.d/daemon-demo", "/opt/local/daemon-demo/bin/daemon-demo.jar")
     link("/opt/local/daemon-demo/bin/daemon-demo.conf", "/opt/local/daemon-demo/conf/daemon-demo.conf")
 }
