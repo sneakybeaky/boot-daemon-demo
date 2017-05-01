@@ -1,0 +1,25 @@
+resources:
+- name: boot-daemon
+  type: git
+  source:
+    uri: https://github.com/sneakybeaky/boot-daemon-demo.git
+    branch: master
+
+- name: debian-package
+  type: s3
+  source:
+    bucket: repo.ninedemons.io
+    versioned_file: boot-daemon/daemon-demo.deb
+    region_name: eu-west-2
+    access_key_id: {{s3-access-key-id}}
+    secret_access_key: {{s3-secret-access-key}}
+
+jobs:
+- name: build
+  plan:
+  - get: boot-daemon
+    trigger: true
+  - task: build
+    file: boot-daemon/ci/tasks/build-debian.yml
+  - put: debian-package
+    params: {file: built-artifact/daemon-demo.deb}
