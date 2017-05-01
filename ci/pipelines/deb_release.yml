@@ -22,4 +22,6 @@ jobs:
   - task: build
     file: boot-daemon/ci/tasks/build-debian.yml
   - put: debian-package
-    params: {file: built-artifact/daemon-demo.deb}
+    params:
+      file: built-artifact/daemon-demo.deb
+      acl: public-read
