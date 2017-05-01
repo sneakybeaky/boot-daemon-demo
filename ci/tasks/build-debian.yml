@@ -15,4 +15,5 @@ outputs:
 
 run:
   path: ./boot-daemon/ci/tasks/scripts/build-debian.sh
+  user: root
 
