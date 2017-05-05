@@ -25,6 +25,6 @@ public class ApplicationTests {
     @Test
     public void testHelloWorld() {
         final String body = restTemplate.getForObject("/", String.class);
-        assertThat(body).isEqualTo("Hello world!");
+        assertThat(body).as("Check the response body").isEqualTo("Hello World!");
     }
 }
