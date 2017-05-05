@@ -12,7 +12,7 @@
     "source_ami": "{{user `source_ami`}}",
     "instance_type": "t2.micro",
     "ssh_username": "ubuntu",
-    "ami_name": "Boot Daemon, Ubuntu, 16.04 LTS, amd64 xenial image build on  {{isotime | clean_ami_name}}"
+    "ami_name": "boot-daemon/ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-{{isotime | clean_ami_name}}"
   }],
   "provisioners": [
     {
