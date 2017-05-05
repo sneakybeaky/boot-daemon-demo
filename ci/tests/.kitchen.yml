@@ -9,7 +9,7 @@ transport:
   ssh_key: <%= ENV['SSH_KEY_PATH'] %>
   connection_timeout: 10
   connection_retries: 5
-  username: centos
+  username: ubuntu
 
 provisioner:
   name: chef_zero
