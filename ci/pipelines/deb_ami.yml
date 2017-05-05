@@ -1,0 +1,99 @@
+resource_types:
+- name: ami
+  type: docker-image
+  source:
+    repository: jdub/ami-resource
+
+resources:
+- name: ubuntu-ami
+  type: ami
+  check_every: 1h
+  source:
+    aws_access_key_id: {{aws_access_key_id}}
+    aws_secret_access_key: {{aws_secret_access_key}}
+    region: eu-west-2
+    filters:
+      owner-id: "099720109477"
+      is-public: true
+      state: available
+      name: ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*
+      root-device-type: ebs
+      virtualization-type: hvm
+
+- name: boot-daemon
+  type: git
+  source:
+    uri: https://github.com/sneakybeaky/boot-daemon-demo.git
+    branch: master
+
+- name: debian-package
+  type: s3
+  source:
+    bucket: repo.ninedemons.io
+    versioned_file: boot-daemon/daemon-demo.deb
+    region_name: eu-west-2
+    access_key_id: {{s3-access-key-id}}
+    secret_access_key: {{s3-secret-access-key}}
+
+- name: packer-manifest
+  type: s3
+  source:
+    bucket: ami-pipeline-artifacts.ninedemons.io
+    versioned_file: ubuntu-boot-daemon-demo-ami/packer-manifest.json
+    region_name: eu-west-2
+    access_key_id: {{s3-access-key-id}}
+    secret_access_key: {{s3-secret-access-key}}
+
+jobs:
+- name: build-debian
+  plan:
+  - get: boot-daemon
+    trigger: true
+  - task: build
+    file: boot-daemon/ci/tasks/build-debian.yml
+  - put: debian-package
+    params:
+      file: built-artifact/daemon-demo.deb
+      acl: public-read
+
+- name: build-ami
+  plan:
+  - get: ubuntu-ami
+  - get: boot-daemon
+    passed: [build-debian]
+  - get: debian-package
+    trigger: true
+    passed: [build-debian]
+  - task: build
+    file: ubuntu-ami/ci/tasks/build-ami.yml
+    params:
+      AWS_ACCESS_KEY_ID: {{aws_access_key_id}}
+      AWS_SECRET_ACCESS_KEY: {{aws_secret_access_key}}
+  - put: packer-manifest
+    params: {file: built-artifact/packer-manifest.json}
+
+- name: test-ami
+  plan:
+  - get: boot-daemon
+    passed: [build-ami]
+  - get: packer-manifest
+    trigger: true
+    passed: [build-ami]
+  - task: test
+    file: boot-daemon/ci/tasks/test-ami.yml
+    params:
+      AWS_ACCESS_KEY_ID: {{aws_access_key_id}}
+      AWS_SECRET_ACCESS_KEY: {{aws_secret_access_key}}
+
+- name: tag-ami
+  plan:
+  - get: boot-daemon
+    passed: [test-ami]
+  - get: packer-manifest
+    trigger: true
+    passed: [test-ami]
+  - task: tag
+    file: boot-daemon/ci/tasks/tag-ami.yml
+    params:
+      AWS_ACCESS_KEY_ID: {{aws_access_key_id}}
+      AWS_SECRET_ACCESS_KEY: {{aws_secret_access_key}}

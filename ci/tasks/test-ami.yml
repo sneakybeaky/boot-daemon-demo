@@ -1,0 +1,17 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source: {repository: sneakybeaky/kitchen-ec2}
+
+params:
+  AWS_ACCESS_KEY_ID:
+  AWS_SECRET_ACCESS_KEY:
+
+inputs:
+- name: centos-packer
+- name: packer-manifest
+
+run:
+  path: ./boot-daemon/ci/tasks/scripts/test-ami.sh

@@ -1,0 +1,21 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source: {repository: hashicorp/packer}
+
+params:
+  AWS_ACCESS_KEY_ID:
+  AWS_SECRET_ACCESS_KEY:
+
+inputs:
+- name: boot-daemon
+- name: debian-package
+- name: ubuntu-ami
+
+outputs:
+- name: built-artifact
+
+run:
+  path: ./boot-daemon/ci/tasks/scripts/build-ami.sh
