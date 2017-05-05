@@ -10,7 +10,7 @@ params:
   AWS_SECRET_ACCESS_KEY:
 
 inputs:
-- name: centos-packer
+- name: boot-daemon
 - name: packer-manifest
 
 run:

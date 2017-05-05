@@ -1,0 +1,25 @@
+---
+driver:
+  name: ec2
+  region: <%= ENV['AWS_REGION'] %>
+  instance_type: m4.large
+  associate_public_ip: true
+
+transport:
+  ssh_key: <%= ENV['SSH_KEY_PATH'] %>
+  connection_timeout: 10
+  connection_retries: 5
+  username: centos
+
+provisioner:
+  name: chef_zero
+
+platforms:
+  - name: ami
+    driver:
+      image_id: <%= ENV['AMI_ID'] %>
+
+suites:
+  - name: server
+    run_list:
+    attributes:
