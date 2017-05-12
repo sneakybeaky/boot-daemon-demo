@@ -1,0 +1,13 @@
+{
+  "name": "java",
+  "description": "OpenJDK java role",
+  "override_attributes": {
+    "java": {
+      "jdk_version": 8,
+      "install_flavor": "openjdk"
+    }
+  },
+  "run_list": [
+    "recipe[spring-boot-demo::default]"
+  ]
+}

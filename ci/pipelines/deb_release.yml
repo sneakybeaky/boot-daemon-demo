@@ -5,6 +5,15 @@ resources:
     uri: https://github.com/sneakybeaky/boot-daemon-demo.git
     branch: master
 
+- name: debian-candidate-package
+  type: s3
+  source:
+    bucket: repo.ninedemons.io
+    versioned_file: boot-daemon-candidate/daemon-demo.deb
+    region_name: eu-west-2
+    access_key_id: {{s3-access-key-id}}
+    secret_access_key: {{s3-secret-access-key}}
+
 - name: debian-package
   type: s3
   source:
@@ -21,7 +30,24 @@ jobs:
     trigger: true
   - task: build
     file: boot-daemon/ci/tasks/build-debian.yml
-  - put: debian-package
+  - put: debian-candidate-package
     params:
       file: built-artifact/daemon-demo.deb
+      acl: private
+
+- name: test
+  plan:
+  - get: boot-daemon
+    passed: [build]
+  - get: debian-candidate-package
+    trigger: true
+    passed: [build]
+  - task: test
+    file: boot-daemon/ci/tasks/test-package.yml
+    params:
+      AWS_ACCESS_KEY_ID: {{aws_access_key_id}}
+      AWS_SECRET_ACCESS_KEY: {{aws_secret_access_key}}
+  - put: debian-package
+    params:
+      file: debian-candidate-package/daemon-demo.deb
       acl: public-read
