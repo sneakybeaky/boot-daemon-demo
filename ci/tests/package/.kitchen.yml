@@ -22,13 +22,9 @@ platforms:
         name: ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*
 
 suites:
-  - name: default
+  - name: server
     run_list:
       - role[daemon]
-    verifier:
-      inspec_tests:
-        - test/smoke/default
-    attributes:
     attributes:
         boot_daemon:
           package_url: <%= ENV['PACKAGE_URL'] %>

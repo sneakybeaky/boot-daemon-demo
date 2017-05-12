@@ -33,7 +33,7 @@ jobs:
   - put: debian-candidate-package
     params:
       file: built-artifact/daemon-demo.deb
-      acl: private
+      acl: public-read
 
 - name: test
   plan:
