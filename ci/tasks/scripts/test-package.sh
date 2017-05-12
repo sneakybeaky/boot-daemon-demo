@@ -14,7 +14,7 @@ chmod 400 ${HOME}/test_kitchen.pem
 export SSH_KEY_PATH=${HOME}/test_kitchen.pem
 
 cd boot-daemon/ci/tests/package
-kitchen test
+kitchen test --destroy=always
 ret_code=$?
 
 aws ec2 delete-key-pair --region ${AWS_REGION} --key-name ${AWS_SSH_KEY_ID}

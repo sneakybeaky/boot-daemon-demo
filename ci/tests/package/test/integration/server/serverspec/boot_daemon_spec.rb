@@ -1,4 +1,5 @@
 require 'serverspec'
+require_relative 'spec_helper.rb'
 
 # Required by serverspec
 set :backend, :exec
@@ -20,7 +21,7 @@ describe "Spring Boot Daemon" do
   context "http connection" do
     subject {command('curl http://localhost:8080')}
 
-    it "is listening" do
+    it "is listening", :retry => 3, :retry_wait => 10 do
       expect(subject.exit_status).to eq 0
     end
 
