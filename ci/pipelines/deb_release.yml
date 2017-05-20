@@ -24,7 +24,7 @@ resources:
     secret_access_key: {{s3-secret-access-key}}
 
 jobs:
-- name: build
+- name: build-package
   plan:
   - get: boot-daemon
     trigger: true
@@ -35,13 +35,13 @@ jobs:
       file: built-artifact/daemon-demo.deb
       acl: public-read
 
-- name: test
+- name: test-package
   plan:
   - get: boot-daemon
-    passed: [build]
+    passed: [build-package]
   - get: debian-candidate-package
     trigger: true
-    passed: [build]
+    passed: [build-package]
   - task: test
     file: boot-daemon/ci/tasks/test-package.yml
     params:
