@@ -10,6 +10,9 @@ image_resource:
 inputs:
 - name: boot-daemon
 
+caches:
+- path: boot-daemon/.gradle
+
 outputs:
 - name: built-artifact
 
